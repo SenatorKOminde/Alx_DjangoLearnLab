@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>Your Secure Documents</h2>
+  <ul>
+    {% for doc in documents %}
+      <li>{{ doc.title }}</li>
+    {% empty %}
+      <li>No documents found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
