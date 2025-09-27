@@ -13,6 +13,7 @@ library = Library.objects.get(name=library_name)
 books_in_library = library.books.all()
 print("Books in {}:".format(library_name), [book.title for book in books_in_library])
 
+
 # Retrieve the librarian for a library
-librarian = library.librarian
+librarian = Librarian.objects.get(library=library)
 print("Librarian for {}:".format(library_name), librarian.name)
