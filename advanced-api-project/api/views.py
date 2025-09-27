@@ -110,6 +110,112 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Book.objects.select_related('author').all()
 
 
+# Additional specific views for more granular control
+
+class AuthorListView(generics.ListAPIView):
+    """
+    Dedicated view for listing all authors.
+    
+    GET: Returns a list of all authors with their book counts.
+    """
+    queryset = Author.objects.all()
+    serializer_class = AuthorListSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
+    def get_queryset(self):
+        """
+        Return queryset with optimized queries for list view.
+        """
+        return Author.objects.prefetch_related('books').all()
+
+
+class AuthorUpdateView(generics.UpdateAPIView):
+    """
+    Dedicated view for updating an author.
+    
+    PUT/PATCH: Updates an existing author.
+    """
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        """
+        Return queryset with optimized queries for update view.
+        """
+        return Author.objects.all()
+
+
+class AuthorDeleteView(generics.DestroyAPIView):
+    """
+    Dedicated view for deleting an author.
+    
+    DELETE: Deletes an author (and all their books due to CASCADE).
+    """
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        """
+        Return queryset with optimized queries for delete view.
+        """
+        return Author.objects.all()
+
+
+class BookListView(generics.ListAPIView):
+    """
+    Dedicated view for listing all books with filtering, searching, and ordering.
+    
+    GET: Returns a list of all books with advanced query capabilities.
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookListSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['title', 'author__name', 'isbn']
+    ordering_fields = ['title', 'publication_year', 'created_at', 'updated_at']
+    ordering = ['-publication_year', 'title']
+
+    def get_queryset(self):
+        """
+        Return queryset with optimized queries for list view.
+        """
+        return Book.objects.select_related('author').all()
+
+
+class BookUpdateView(generics.UpdateAPIView):
+    """
+    Dedicated view for updating a book.
+    
+    PUT/PATCH: Updates an existing book.
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        """
+        Return queryset with optimized queries for update view.
+        """
+        return Book.objects.select_related('author').all()
+
+
+class BookDeleteView(generics.DestroyAPIView):
+    """
+    Dedicated view for deleting a book.
+    
+    DELETE: Deletes a book.
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        """
+        Return queryset with optimized queries for delete view.
+        """
+        return Book.objects.select_related('author').all()
 
 
 @api_view(['GET'])
@@ -125,10 +231,16 @@ def api_root(request):
         'authors': {
             'list': request.build_absolute_uri('/api/authors/'),
             'create': request.build_absolute_uri('/api/authors/'),
+            'list_only': request.build_absolute_uri('/api/authors/list/'),
+            'update': request.build_absolute_uri('/api/authors/{id}/update/'),
+            'delete': request.build_absolute_uri('/api/authors/{id}/delete/'),
         },
         'books': {
             'list': request.build_absolute_uri('/api/books/'),
             'create': request.build_absolute_uri('/api/books/'),
+            'list_only': request.build_absolute_uri('/api/books/list/'),
+            'update': request.build_absolute_uri('/api/books/{id}/update/'),
+            'delete': request.build_absolute_uri('/api/books/{id}/delete/'),
         },
         'filtering': {
             'books_by_title': request.build_absolute_uri('/api/books/?title=search_term'),
