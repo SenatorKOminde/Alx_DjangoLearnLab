@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden
 from django.forms import ModelForm
 from .models import Book, Library, Author, UserProfile
+from .models import Library
 
 # Function-based view to list all books
 def list_books(request):

@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 from .models import Library
 from django.views.generic.detail import DetailView
 from django.contrib.auth import login
-from .models import Library
 
 # Function-based view: List all books
 @login_required
