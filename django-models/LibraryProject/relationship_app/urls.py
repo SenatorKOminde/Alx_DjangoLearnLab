@@ -12,6 +12,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='relationship_app/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='relationship_app/logout.html'), name='logout'),
     path('register/', views.RegisterView.as_view(), name='register'),
+    path('register-fbv/', views.register, name='register_fbv'),
 
     # Role-based views
     path('admin-view/', views.admin_view, name='admin_view'),
