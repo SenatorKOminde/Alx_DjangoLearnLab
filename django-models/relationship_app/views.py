@@ -1,12 +1,13 @@
-from .models import Library
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
-from .models import Book, Library, Author
+from django.http import HttpResponseForbidden
+from django.forms import ModelForm
+from .models import Book, Library, Author, UserProfile
 
 # Function-based view to list all books
 def list_books(request):
@@ -96,3 +97,108 @@ def profile_view(request):
     View to display user profile (requires login).
     """
     return render(request, 'relationship_app/profile.html', {'user': request.user})
+
+# Role-based access control functions
+def is_admin(user):
+    """Check if user has Admin role."""
+    try:
+        return user.userprofile.role == 'Admin'
+    except:
+        return False
+
+def is_librarian(user):
+    """Check if user has Librarian role."""
+    try:
+        return user.userprofile.role == 'Librarian'
+    except:
+        return False
+
+def is_member(user):
+    """Check if user has Member role."""
+    try:
+        return user.userprofile.role == 'Member'
+    except:
+        return False
+
+# Role-based views
+@login_required
+@user_passes_test(is_admin)
+def admin_view(request):
+    """
+    Admin view that only users with Admin role can access.
+    """
+    return render(request, 'relationship_app/admin_view.html', {
+        'user': request.user,
+        'role': request.user.userprofile.role
+    })
+
+@login_required
+@user_passes_test(is_librarian)
+def librarian_view(request):
+    """
+    Librarian view accessible only to users with Librarian role.
+    """
+    return render(request, 'relationship_app/librarian_view.html', {
+        'user': request.user,
+        'role': request.user.userprofile.role
+    })
+
+@login_required
+@user_passes_test(is_member)
+def member_view(request):
+    """
+    Member view for users with Member role.
+    """
+    return render(request, 'relationship_app/member_view.html', {
+        'user': request.user,
+        'role': request.user.userprofile.role
+    })
+
+# Custom Permissions Views
+class BookForm(ModelForm):
+    class Meta:
+        model = Book
+        fields = ['title', 'author']
+
+@login_required
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+def add_book(request):
+    """
+    View to add a new book (requires can_add_book permission).
+    """
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('relationship_app:list_books')
+    else:
+        form = BookForm()
+    return render(request, 'relationship_app/add_book.html', {'form': form})
+
+@login_required
+@permission_required('relationship_app.can_change_book', raise_exception=True)
+def edit_book(request, book_id):
+    """
+    View to edit a book (requires can_change_book permission).
+    """
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == 'POST':
+        form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            return redirect('relationship_app:list_books')
+    else:
+        form = BookForm(instance=book)
+    return render(request, 'relationship_app/edit_book.html', {'form': form, 'book': book})
+
+@login_required
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
+def delete_book(request, book_id):
+    """
+    View to delete a book (requires can_delete_book permission).
+    """
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == 'POST':
+        book.delete()
+        return redirect('relationship_app:list_books')
+    return render(request, 'relationship_app/delete_book.html', {'book': book})
