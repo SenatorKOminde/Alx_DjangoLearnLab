@@ -6,7 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework as django_filters
 from django.db.models import Q, Min, Max, Count
 from .models import Author, Book
-ftom rest_framework import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework import IsAuthenticatedOrReadOnly, IsAuthenticated
 from .serializers import (
     AuthorSerializer, AuthorListSerializer,
     BookSerializer, BookListSerializer
