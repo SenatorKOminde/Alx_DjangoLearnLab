@@ -67,14 +67,60 @@ Books can be ordered by:
 #### Pagination
 All list endpoints support pagination with 20 items per page.
 
-## Installation and Setup
+## 🚀 Quick Setup
 
-### Prerequisites
+### Automated Setup (Recommended)
+
+#### Cross-Platform Setup
+```bash
+# Run the universal setup script
+python setup.py
+```
+
+#### Ubuntu/Linux Setup
+```bash
+# Make executable and run
+chmod +x setup_ubuntu.sh
+./setup_ubuntu.sh
+```
+
+#### Windows Command Prompt
+```cmd
+# Run the Windows setup script
+setup_windows.bat
+```
+
+#### Windows PowerShell
+```powershell
+# Set execution policy and run
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+.\setup_windows.ps1
+```
+
+### 🔧 What the Setup Scripts Do
+
+The automated setup scripts will:
+- ✅ Check Python and pip installation
+- ✅ Create isolated virtual environment
+- ✅ Install all required dependencies
+- ✅ Run database migrations
+- ✅ Create admin superuser (admin/admin123)
+- ✅ Run comprehensive tests
+- ✅ Create sample data (books and authors)
+- ✅ Provide detailed setup instructions
+
+### 📚 Detailed Setup Guide
+
+For troubleshooting and detailed setup instructions, see [SETUP_GUIDE.md](SETUP_GUIDE.md).
+
+### Manual Setup
+
+#### Prerequisites
 - Python 3.8+
 - pip
 - virtualenv (recommended)
 
-### Setup Instructions
+#### Setup Instructions
 
 1. **Clone the repository**
    ```bash
@@ -84,13 +130,18 @@ All list endpoints support pagination with 20 items per page.
 
 2. **Create and activate virtual environment**
    ```bash
+   # Linux/macOS
    python3 -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   source venv/bin/activate
+   
+   # Windows
+   python -m venv venv
+   venv\Scripts\activate
    ```
 
 3. **Install dependencies**
    ```bash
-   pip install django djangorestframework django-filter
+   pip install -r requirements.txt
    ```
 
 4. **Run migrations**
@@ -104,10 +155,31 @@ All list endpoints support pagination with 20 items per page.
    python manage.py createsuperuser
    ```
 
-6. **Run the development server**
+6. **Create sample data**
+   ```bash
+   python create_sample_data.py
+   ```
+
+7. **Run the development server**
    ```bash
    python manage.py runserver
    ```
+
+### 🎯 Quick Start Scripts
+
+After setup, use these scripts:
+
+#### Ubuntu/Linux
+```bash
+./start_server.sh    # Start the server
+./test_api.sh        # Test the API
+```
+
+#### Windows
+```cmd
+start_server.bat     # Start the server
+test_api.bat         # Test the API
+```
 
 ## API Usage Examples
 

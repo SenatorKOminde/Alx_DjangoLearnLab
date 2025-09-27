@@ -121,6 +121,7 @@ class AuthorAPITest(APITestCase):
     
     def test_author_list_authenticated(self):
         """Test retrieving author list as authenticated user."""
+        # Test with force_authenticate
         self.client.force_authenticate(user=self.user)
         url = reverse('api:author-list-create')
         response = self.client.get(url)
@@ -134,6 +135,26 @@ class AuthorAPITest(APITestCase):
         # Check that our test author is in the response
         author_names = [author['name'] for author in authors]
         self.assertIn('Test Author', author_names)
+    
+    def test_author_list_with_login(self):
+        """Test retrieving author list using client.login authentication."""
+        # Test with client.login method
+        login_success = self.client.login(username='testuser', password='testpass123')
+        self.assertTrue(login_success, "Login should be successful")
+        
+        url = reverse('api:author-list-create')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Handle pagination
+        if 'results' in response.data:
+            authors = response.data['results']
+        else:
+            authors = response.data
+        self.assertIsInstance(authors, list)
+        
+        # Logout after test
+        self.client.logout()
     
     def test_author_list_unauthenticated(self):
         """Test retrieving author list as unauthenticated user."""
@@ -226,6 +247,30 @@ class BookAPITest(APITestCase):
         # Check that our test book is in the response
         book_titles = [book['title'] for book in books]
         self.assertIn('Test Book', book_titles)
+    
+    def test_book_list_with_login(self):
+        """Test retrieving book list using client.login authentication."""
+        # Test with client.login method
+        login_success = self.client.login(username='testuser', password='testpass123')
+        self.assertTrue(login_success, "Login should be successful")
+        
+        url = reverse('api:book-list-create')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Handle pagination
+        if 'results' in response.data:
+            books = response.data['results']
+        else:
+            books = response.data
+        self.assertIsInstance(books, list)
+        
+        # Check that our test book is in the response
+        book_titles = [book['title'] for book in books]
+        self.assertIn('Test Book', book_titles)
+        
+        # Logout after test
+        self.client.logout()
     
     def test_book_list_unauthenticated(self):
         """Test retrieving book list as unauthenticated user."""

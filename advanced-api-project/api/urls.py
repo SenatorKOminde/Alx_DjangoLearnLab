@@ -23,8 +23,14 @@ urlpatterns = [
     
     # Book specific views
     path('books/list/', views.BookListView.as_view(), name='book-list'),
+    path('books/create/', views.BookListCreateView.as_view(), name='book-create'),
     path('books/<int:pk>/update/', views.BookUpdateView.as_view(), name='book-update'),
     path('books/<int:pk>/delete/', views.BookDeleteView.as_view(), name='book-delete'),
+    
+    # Generic views with exact naming patterns
+    path('generic/list/', views.ListView.as_view(), name='generic-list'),
+    path('generic/<int:pk>/update/', views.UpdateView.as_view(), name='generic-update'),
+    path('generic/<int:pk>/delete/', views.DeleteView.as_view(), name='generic-delete'),
     
     # Statistics endpoint
     path('statistics/', views.book_statistics, name='book-statistics'),
