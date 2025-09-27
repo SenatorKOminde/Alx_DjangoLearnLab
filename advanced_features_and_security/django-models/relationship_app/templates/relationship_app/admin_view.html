@@ -1,0 +1,17 @@
+<!-- admin_view.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin View</title>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    <p>Welcome, {{ user.username }}! You are logged in as an {{ role }}.</p>
+    <p>This view is only accessible to users with Admin role.</p>
+    <ul>
+        <li><a href="{% url 'relationship_app:list_books' %}">View All Books</a></li>
+        <li><a href="{% url 'relationship_app:logout' %}">Logout</a></li>
+    </ul>
+</body>
+</html>

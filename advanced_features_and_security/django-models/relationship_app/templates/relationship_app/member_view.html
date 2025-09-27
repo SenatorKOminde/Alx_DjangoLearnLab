@@ -1,0 +1,17 @@
+<!-- member_view.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Member View</title>
+</head>
+<body>
+    <h1>Member Dashboard</h1>
+    <p>Welcome, {{ user.username }}! You are logged in as a {{ role }}.</p>
+    <p>This view is only accessible to users with Member role.</p>
+    <ul>
+        <li><a href="{% url 'relationship_app:list_books' %}">View All Books</a></li>
+        <li><a href="{% url 'relationship_app:logout' %}">Logout</a></li>
+    </ul>
+</body>
+</html>
