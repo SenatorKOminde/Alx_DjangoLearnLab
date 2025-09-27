@@ -35,6 +35,18 @@ class RegisterView(FormView):
         form.save()
         return super().form_valid(form)
 
+            # Function-based registration view using UserCreationForm()
+        def register(request):
+            if request.method == 'POST':
+                form = UserCreationForm(request.POST)
+                if form.is_valid():
+                    user = form.save()
+                    login(request, user)
+                    return render(request, 'relationship_app/register_success.html', {'user': user})
+            else:
+                form = UserCreationForm()
+            return render(request, 'relationship_app/register.html', {'form': form})
+
 # Role-based access control
 from .models import Author
 from django.contrib.auth.models import User
