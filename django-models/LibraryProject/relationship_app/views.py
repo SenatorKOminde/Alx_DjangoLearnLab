@@ -6,6 +6,8 @@ from .models import Book, Library, Author, Librarian
 from django.contrib.auth.models import User
 from .models import Library
 from django.views.generic.detail import DetailView
+from views import list_books
+
 # Function-based view: List all books
 @login_required
 def list_books(request):
