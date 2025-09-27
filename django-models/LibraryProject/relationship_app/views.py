@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.contrib.auth.decorators import permission_required
 from django.views.generic import DetailView
 from .models import Book, Library, Author, Librarian
 from django.contrib.auth.models import User
